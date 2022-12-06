@@ -1,28 +1,27 @@
-const categories = [
-  {
-    name: "commercial",
-    description:
-      "Photos of grocery stores, food trucks, and other commercial projects",
-  },
-  { name: "portraits", description: "Portraits of people in my life" },
-  { name: "food", description: "Delicious delicacies" },
-  {
-    name: "landscape",
-    description: "Fields, farmhouses, waterfalls, and the beauty of nature",
-  },
-];
+import { useEffect } from "react";
+import { capitalizeFirstLetter } from "../../utils/helpers";
+
 // "Note also the use of parentheses in the map callback to return JSX.
 // When you map over an array in a JSX expression, you should return only a single JSX element—
 // like how you can only return a single element from a React component."
-const Nav = () => {
-  const categorySelected = (name) => {
-    console.log(`${name} clicked`);
-  };
+
+//There's also a short-circuit expression, as shown in the following code snippet:
+// <li className={`mx-1 ${currentCategory.name === category.name && 'navActive'}`}>
+// The preceding line of code means that currentCategory.name === category.name will get evaluated,
+// and as long as it is true, then the second bit of the short circuit, navActive, will be returned.
+const Nav = (props) => {
+  const { categories = [], setCurrentCategory, currentCategory } = props;
+
+  useEffect(() => {
+    document.title = capitalizeFirstLetter(currentCategory.name);
+  }, [currentCategory]);
+
   return (
-    <header className="flex-row">
+    <header className="flex-row px-1">
       <h2>
         <a data-testid="link" href="/">
           <span role="img" aria-label="camera">
+            {" "}
             📸
           </span>{" "}
           Oh Snap!
@@ -35,13 +34,22 @@ const Nav = () => {
               About me
             </a>
           </li>
-          <li>
+          <li className="mx-2">
             <span>Contact</span>
           </li>
           {categories.map((category) => (
-            <li className="mx-1" key={category.name}>
-              <span onClick={() => categorySelected(category.name)}>
-                {category.name}
+            <li
+              className={`mx-1 ${
+                currentCategory.name === category.name && "navActive"
+              }`}
+              key={category.name}
+            >
+              <span
+                onClick={() => {
+                  setCurrentCategory(category);
+                }}
+              >
+                {capitalizeFirstLetter(category.name)}
               </span>
             </li>
           ))}
